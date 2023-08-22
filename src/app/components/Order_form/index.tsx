@@ -35,8 +35,8 @@ export type InputProps = {
   customer_id: string;
   items: Array<{
     itemsDesc: string;
-    itemsQty: string;
-    itemsPrice: string;
+    itemsQty: number;
+    itemsPrice: number;
   }>;
 };
 
@@ -88,14 +88,18 @@ export default function OrderForm() {
     value: string
   ) => {
     const updatedItems = [...items_list];
-    updatedItems[index][field] = value;
+    // updatedItems[index][field] = value;
+    updatedItems[index] = {
+      ...updatedItems[index],
+      [field]: value,
+    };
     setItems_list(updatedItems);
   };
 
   const handleAddItem = () => {
     setItems_list([
       ...items_list,
-      { itemsID: "", itemsDesc: "", itemsQty: "", itemsPrice: "" },
+      { itemsID: "", itemsDesc: "", itemsQty: 0, itemsPrice: 0 },
     ]);
   };
 
