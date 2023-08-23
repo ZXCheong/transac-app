@@ -34,9 +34,10 @@ export type InputProps = {
 
   customer_id: string;
   items: Array<{
-    itemsDesc: string;
-    itemsQty: number;
-    itemsPrice: number;
+    item_id: number;
+    item_desc: string;
+    item_qty: number;
+    item_price: number;
   }>;
 };
 
@@ -64,14 +65,14 @@ export default function OrderForm() {
   const [loginError, setSubmitError] = useState("");
 
   const [items_list, setItems_list] = useState<ItemList[]>([
-    { itemsID: "", itemsDesc: "", itemsQty: 0, itemsPrice: 0 },
+    { item_id: 0, item_desc: "", item_qty: 0, item_price: 0 },
   ]);
 
   interface ItemList {
-    itemsID: string;
-    itemsDesc: string;
-    itemsQty: number;
-    itemsPrice: number;
+    item_id: number;
+    item_desc: string;
+    item_qty: number;
+    item_price: number;
   }
 
   //set the split button value for orderStatus
@@ -88,7 +89,7 @@ export default function OrderForm() {
     value: string
   ) => {
     const updatedItems = [...items_list];
-    // updatedItems[index][field] = value;
+
     updatedItems[index] = {
       ...updatedItems[index],
       [field]: value,
@@ -99,45 +100,9 @@ export default function OrderForm() {
   const handleAddItem = () => {
     setItems_list([
       ...items_list,
-      { itemsID: "", itemsDesc: "", itemsQty: 0, itemsPrice: 0 },
+      { item_id: 0, item_desc: "", item_qty: 0, item_price: 0 },
     ]);
   };
-
-  // const handleFormSubmit = async () => {
-  //   try {
-  //     reset();
-
-  //     const requestData = {
-  //       ...getValues(),
-  //       order_status: orderStatus,
-  //     };
-  //     console.log(requestData);
-  //     const response = await axios.post(
-  //       "http://localhost:4001/api/Authentication/Login",
-  //       requestData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       const token = response.data;
-  //       localStorage.setItem("authToken", token);
-  //       localStorage.setItem("Order_status", orderStatus);
-  //       router.push("/orderform");
-  //       console.log("Order Submitted");
-  //       setSubmitError(" ");
-  //     } else {
-  //       setSubmitError("Submission Failed");
-  //       console.log(response.data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during login:", error);
-  //     setSubmitError("Invalid username or password.");
-  //   }
-  // };
 
   const onSubmit = async (data: InputProps) => {
     try {
@@ -154,7 +119,7 @@ export default function OrderForm() {
       const billingAddress = `${billingStreet}, ${billingPost}, ${billingCity}, ${billingState}`;
       const shippingAddress = `${shippingStreet}, ${shippingPost}, ${shippingCity}, ${shippingState}`;
 
-      data.order_status = orderStatus;
+      data.order_status = getValues("order_status");
       data.billing_address = billingAddress;
       data.shipping_address = shippingAddress;
 
@@ -175,6 +140,7 @@ export default function OrderForm() {
       );
 
       if (response.status === 200) {
+        reset();
         console.log("Order Submitted");
       } else {
         setSubmitError("Submission Failed");
@@ -208,17 +174,6 @@ export default function OrderForm() {
               </Grid>
               <Grid container spacing={2} sx={{ boxShadow: "none", mt: 3 }}>
                 <Grid container>
-                  {/* <Grid item xs={12}>
-                    <Typography variant="body1" component="div">
-                      Order ID:
-                    </Typography>
-                    <TextField
-                      placeholder="Order ID"
-                      variant="outlined"
-                      size="small"
-                    />
-                  </Grid> */}
-
                   <Grid item xs={6}>
                     <Typography variant="body1" component="div">
                       Created Date:
@@ -241,6 +196,7 @@ export default function OrderForm() {
                       onChange={handleOrderStatusChange}
                       size="small"
                     >
+                      {" "}
                       <MenuItem value="SELECT" disabled>
                         SELECT
                       </MenuItem>
@@ -442,11 +398,11 @@ export default function OrderForm() {
                               size="small"
                               variant="outlined"
                               fullWidth
-                              value={item.itemsID}
+                              value={item.item_id}
                               onChange={(e) =>
                                 handleItemChange(
                                   index,
-                                  "itemsID",
+                                  "item_id",
                                   e.target.value
                                 )
                               }
@@ -458,11 +414,11 @@ export default function OrderForm() {
                               size="small"
                               variant="outlined"
                               fullWidth
-                              value={item.itemsDesc}
+                              value={item.item_desc}
                               onChange={(e) =>
                                 handleItemChange(
                                   index,
-                                  "itemsDesc",
+                                  "item_desc",
                                   e.target.value
                                 )
                               }
@@ -474,11 +430,11 @@ export default function OrderForm() {
                               size="small"
                               variant="outlined"
                               fullWidth
-                              value={item.itemsPrice}
+                              value={item.item_price}
                               onChange={(e) =>
                                 handleItemChange(
                                   index,
-                                  "itemsPrice",
+                                  "item_price",
                                   e.target.value
                                 )
                               }
@@ -490,11 +446,11 @@ export default function OrderForm() {
                               size="small"
                               variant="outlined"
                               fullWidth
-                              value={item.itemsQty}
+                              value={item.item_qty}
                               onChange={(e) =>
                                 handleItemChange(
                                   index,
-                                  "itemsQty",
+                                  "item_qty",
                                   e.target.value
                                 )
                               }

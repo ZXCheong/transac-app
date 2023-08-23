@@ -6,8 +6,8 @@ import Box from "@mui/material/Box";
 import { Form, useForm, useFieldArray } from "react-hook-form";
 import { theme } from "../const/theme";
 import NavigationBar from "../components/navigationbar";
-import { DataProps } from "../components/Table/props";
-import OrderForm from "../components/Order_form/index";
+import { DataProps } from "../components/Order_form/props";
+import OrderForm from "../components/Order_form";
 export type InputProps = { UserName: string; Password: string };
 
 export default function Home() {

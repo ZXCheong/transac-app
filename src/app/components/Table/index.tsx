@@ -64,8 +64,7 @@ export default function DataTable() {
             },
           }
         );
-        // const data = await response.json();
-        // console.log(data);
+
         const generatedColumns: GridColDef[] = Object.keys(
           response.data[0]
         ).map((key) => {
@@ -84,6 +83,8 @@ export default function DataTable() {
             width = 200;
           } else if (key === "customer_id") {
             width = 100;
+          } else if (key === "items") {
+            width = 0;
           }
 
           return {
@@ -173,7 +174,7 @@ export default function DataTable() {
               onClick={handleClose}
               sx={{ mr: 5 }}
             >
-              Edit
+              Delete
             </Button>
             <IconButton
               edge="end"
@@ -238,7 +239,8 @@ export default function DataTable() {
                       <TableCell align="right">{item.item_desc}</TableCell>
                       <TableCell align="right">{item.item_qty}</TableCell>
                       <TableCell align="right">
-                        {item.item_price.toFixed(2)}
+                        {item.item_price}
+                        {/* {item.item_price.toFixed(2)} */}
                       </TableCell>
                     </TableRow>
                   ))
