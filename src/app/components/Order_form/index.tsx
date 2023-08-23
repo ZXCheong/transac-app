@@ -163,11 +163,13 @@ export default function OrderForm() {
       console.log("data", data);
 
       const response = await axios.post(
-        "http://localhost:4001/api/Submit/addOrder",
+        "http://localhost:4001/api/Order/addOrder",
         data,
         {
           headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         }
       );
@@ -206,7 +208,7 @@ export default function OrderForm() {
               </Grid>
               <Grid container spacing={2} sx={{ boxShadow: "none", mt: 3 }}>
                 <Grid container>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <Typography variant="body1" component="div">
                       Order ID:
                     </Typography>
@@ -215,7 +217,7 @@ export default function OrderForm() {
                       variant="outlined"
                       size="small"
                     />
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={6}>
                     <Typography variant="body1" component="div">

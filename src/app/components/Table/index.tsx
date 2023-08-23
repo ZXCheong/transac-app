@@ -106,7 +106,7 @@ export default function DataTable() {
   async function fetchItemsForOrder(orderId: number) {
     try {
       const response = await axios.get(
-        `http://localhost:4001/api/Item/items/?order_id=${orderId}`,
+        `http://localhost:4001/api/Order/items/?order_id=${orderId}`,
         {
           headers: {
             "Access-Control-Allow-Origin": "*",
