@@ -15,31 +15,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-
-export type InputProps = {
-  order_date: string;
-  order_status: string;
-
-  billing_address: string;
-  billing_street: string;
-  billing_postal_code: string;
-  billing_city: string;
-  billing_state: string;
-
-  shipping_address: string;
-  shipping_street: string;
-  shipping_postal_code: string;
-  shipping_city: string;
-  shipping_state: string;
-
-  customer_id: string;
-  items: Array<{
-    item_id: number;
-    item_desc: string;
-    item_qty: number;
-    item_price: number;
-  }>;
-};
+import { InputProps, ItemList } from "./props";
+import {
+  setSubmitError,
+  handleItemChange,
+  handleAddItem,
+} from "@/app/const/handler";
+import { setItems_list, items_list } from "@/app/const/handler";
 
 export default function OrderForm() {
   const router = useRouter();
@@ -62,19 +44,6 @@ export default function OrderForm() {
     },
   });
 
-  const [loginError, setSubmitError] = useState("");
-
-  const [items_list, setItems_list] = useState<ItemList[]>([
-    { item_id: 0, item_desc: "", item_qty: 0, item_price: 0 },
-  ]);
-
-  interface ItemList {
-    item_id: number;
-    item_desc: string;
-    item_qty: number;
-    item_price: number;
-  }
-
   //set the split button value for orderStatus
   const [orderStatus, setOrderStatus] = React.useState("SELECT"); // State to store selected order status
 
@@ -83,72 +52,38 @@ export default function OrderForm() {
     setValue("order_status", event.target.value);
   };
 
-  const handleItemChange = (
-    index: number,
-    field: keyof ItemList,
-    value: string
-  ) => {
-    const updatedItems = [...items_list];
-
-    updatedItems[index] = {
-      ...updatedItems[index],
-      [field]: value,
-    };
-    setItems_list(updatedItems);
-  };
-
-  const handleAddItem = () => {
-    setItems_list([
-      ...items_list,
-      { item_id: 0, item_desc: "", item_qty: 0, item_price: 0 },
-    ]);
-  };
-
   const onSubmit = async (data: InputProps) => {
-    try {
-      const billingStreet = getValues("billing_street");
-      const billingPost = getValues("billing_postal_code");
-      const billingCity = getValues("billing_city");
-      const billingState = getValues("billing_state");
+    const billingAddress = `${data.billing_street}, ${data.billing_postal_code}, ${data.billing_city}, ${data.billing_state}`;
+    const shippingAddress = `${data.shipping_street}, ${data.shipping_postal_code}, ${data.shipping_city}, ${data.shipping_state}`;
+    data.order_date = getValues("order_date");
+    data.order_status = getValues("order_status");
+    data.billing_address = billingAddress;
+    data.shipping_address = shippingAddress;
 
-      const shippingStreet = getValues("shipping_street");
-      const shippingPost = getValues("shipping_postal_code");
-      const shippingCity = getValues("shipping_city");
-      const shippingState = getValues("shipping_state");
+    data.items = items_list;
 
-      const billingAddress = `${billingStreet}, ${billingPost}, ${billingCity}, ${billingState}`;
-      const shippingAddress = `${shippingStreet}, ${shippingPost}, ${shippingCity}, ${shippingState}`;
+    console.log("data", data);
 
-      data.order_status = getValues("order_status");
-      data.billing_address = billingAddress;
-      data.shipping_address = shippingAddress;
-
-      data.items = items_list;
-
-      console.log("data", data);
-
-      const response = await axios.post(
-        "http://localhost:4001/api/Order/addOrder",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        reset();
-        console.log("Order Submitted");
-      } else {
-        setSubmitError("Submission Failed");
-        console.log(response.data);
+    const response = await axios.post(
+      "http://localhost:4001/api/Order/addOrder",
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
       }
-    } catch (error) {
-      console.error("Error on submission:", error);
-      setSubmitError("Invalid data.");
+    );
+
+    if (response.status === 201) {
+      console.log("Order Submitted");
+      reset();
+      setItems_list([
+        { item_id: 0, item_desc: "", item_qty: 0, item_price: 0 },
+      ]);
+    } else if (response.status !== 201) {
+      setSubmitError("Submission Failed");
     }
   };
 
