@@ -14,6 +14,25 @@ type ItemProps = {
     itemprice: number;
 }
 
+export type Order = {
+  id: number;
+  order_date: string;
+  order_status: string;
+  billing_address: string;
+  shipping_address: string;
+  customer_id: number;
+  items: Item[];
+};
+
+export interface Item {
+  id: number;
+  order_id: number;
+  item_desc: string;
+  item_price: number;
+  item_qty: number;
+  item_id: number;
+}
+
 export type InputProps = {
     order_date: string;
     order_status: string;
@@ -38,4 +57,11 @@ export type InputProps = {
       item_price: number;
     }>;
   };
+
+  export interface ItemList {
+    item_id: number;
+    item_desc: string;
+    item_qty: number;
+    item_price: number;
+  }
   
